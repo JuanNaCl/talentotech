@@ -1,0 +1,68 @@
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: svc-joomla
+  labels:
+    app: prueba-web
+    microservice: joomla
+    version: v1
+spec:
+  type: LoadBalancer
+  selector:
+    microservice: joomla
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+
+---
+
+apiVersion: apps/v1 ##debe llamarse apps, no sirve app
+kind: Deployment
+
+metadata:
+  name: joomla-deploy
+  labels:
+    app: prueba-web 
+
+spec:
+  selector:
+    matchLabels:
+      microservice: joomla
+  replicas: 1
+
+  template:
+    metadata:
+      name: joomla
+      labels:
+        app: prueba-web
+        microservice: joomla
+        version: v1
+    spec:
+      containers:
+        - name: joomla
+          image: juannacl/unidad2joomla:despliegue_dockercompose
+          ports:
+            - containerPort: 80
+          env:
+            - name: JOOMLA_DB_HOST
+              value: svc-mysql
+            - name: MYSQL_PORT_3306_TCP
+              value: "3306"
+            - name: JOOMLA_DB_PASSWORD
+              value: joomla
+            - name: JOOMLA_DB_USER
+              value: joomla
+            - name: JOOMLA_DB_NAME
+              value: joomla
+          volumeMounts:
+            - name: persistent-joomla
+              mountPath: /var/www/html
+      volumes:
+        - name: persistent-joomla
+          persistentVolumeClaim:
+            claimName: joomla-data
+
+## kubectl apply -f deploy_joomla.yml
+# kubectl get svc  -o wide

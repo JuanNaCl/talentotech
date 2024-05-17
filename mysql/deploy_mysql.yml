@@ -1,0 +1,67 @@
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: svc-mysql
+  labels:
+    app: prueba-web
+    microservice: mysql
+    version: v1
+spec:
+  type: NodePort ## tipo de servicio tambien puede ser LoadBalancer, NodePort, ClusterIP
+  selector:
+    microservice: mysql
+  ports:
+    - protocol: TCP
+      port: 3306
+      targetPort: 3306
+
+---
+
+apiVersion: apps/v1 ##debe llamarse apps, no sirve app
+kind: Deployment
+
+metadata:
+  name: mysql-deploy
+  labels:
+    app: prueba-web 
+
+spec:
+  selector:
+    matchLabels:
+      microservice: mysql
+  replicas: 1
+
+  template:
+    metadata:
+      name: mysql
+      labels:
+        app: prueba-web
+        microservice: mysql
+        version: v1
+    spec:
+      containers:
+        - name: mysql
+          image: juannacl/unidad2:despliegue_dockercompose
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: root
+            - name: MYSQL_USER
+              value: joomla
+            - name: MYSQL_DATABASE
+              value: joomla
+            - name: MYSQL_PASSWORD
+              value: joomla
+
+          volumeMounts:
+            - name: persistent-mysql
+              mountPath: /var/lib/mysql
+      volumes:
+        - name: persistent-mysql
+          persistentVolumeClaim:
+            claimName: mysql-data
+
+## kubectl apply -f deploy_mysql.yml
+# kubectl get svc  -o wide

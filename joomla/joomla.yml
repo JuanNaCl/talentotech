@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod 
+
+metadata:
+  name: joomla
+  labels:
+    app: prueba-web
+    microservice: joomla
+    version: v1
+
+spec:
+  containers:
+    - name: joomla
+      image: juannacl/unidad2joomla:despliegue_dockercompose

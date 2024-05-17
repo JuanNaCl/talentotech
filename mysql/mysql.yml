@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod 
+
+metadata:
+  name: mysql
+  labels:
+    app: prueba-web
+    microservice: mysql
+    version: v1
+
+spec:
+  containers:
+    - name: mysql
+      image: juannacl/unidad2:despliegue_dockercompose
