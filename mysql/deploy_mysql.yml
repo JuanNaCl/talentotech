@@ -8,7 +8,7 @@ metadata:
     microservice: mysql
     version: v1
 spec:
-  type: NodePort ## tipo de servicio tambien puede ser LoadBalancer, NodePort, ClusterIP
+  type: ClusterIP ## tipo de servicio tambien puede ser LoadBalancer, NodePort, ClusterIP
   selector:
     microservice: mysql
   ports:

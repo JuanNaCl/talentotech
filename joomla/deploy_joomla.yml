@@ -8,7 +8,7 @@ metadata:
     microservice: joomla
     version: v1
 spec:
-  type: LoadBalancer
+  type: LoadBalancer ##Este se utiliza para que se pueda acceder desde el exterior, otra opcion es NodePort
   selector:
     microservice: joomla
   ports:
